@@ -10,7 +10,7 @@ app.use(cors()); // Add this line to enable CORS
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
+  res.sendFile(__dirname + '/index.html');
 });
 
 app.get('/get-data', async (req, res) => {
