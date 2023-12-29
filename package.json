@@ -1,14 +1,20 @@
 {
+    "homepage": "http://udittripathi.github.io/Task1",
     "name": "assignment-json-parser",
     "version": "1.0.0",
     "description": "An application to parse JSON from the given API",
     "main": "index.js",
     "scripts": {
-        "start": "node index.js"
+        "start": "node index.js",
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -d build"
     },
     "dependencies": {
         "axios": "^0.21.1",
         "cors": "^2.8.5",
         "express": "^4.17.1"
+    },
+    "devDependencies": {
+        "gh-pages": "^6.1.1"
     }
 }
