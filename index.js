@@ -1,61 +1,27 @@
+function performGetRequest() {
+  var resultElement = document.getElementById("display");
+  resultElement.innerHTML = "";
 
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors'); // Add this line
+  // fetching the JSON data using axios library which returns a promise object as a response
+  // Used Google Chrome extension to bypass the CORS Error - link to the extension - https://chrome.google.com/webstore/detail/moesif-origin-cors-change/digfbfaphojjndkpccljibejjbppifbc
+  axios
+    .get("https://s3.amazonaws.com/open-to-cors/assignment.json")
+    .then(function(response) {
+      resultElement.innerHTML = generateSuccessHTMLOutput(response);
+    })
+    .catch(function(error) {
+      resultElement.innerHTML = error;
+    });
+}
 
-const app = express();
-const port = 3000;
-
-app.use(cors()); // Add this line to enable CORS
-app.use(express.static('public'));
-
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
-});
-
-app.get('/get-data', async (req, res) => {
-  try {
-    const response = await axios.get('https://s3.amazonaws.com/open-to-cors/assignment.json');
-    const data = response.data;
-
-    if (typeof data === 'object' && Array.isArray(data.products)) {
-      const products = data.products;
-
-      const sortedProducts = products.sort((a, b) => {
-        const valueA = a.popularity;
-        const valueB = b.popularity;
-        return valueB - valueA;
-      });
-
-      res.json(sortedProducts);
-    } else {
-      console.error('Invalid data format: missing or invalid products property');
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-app.get('/performGetRequest', async (req, res) => {
-  try {
-    const response = await axios.get('https://s3.amazonaws.com/open-to-cors/assignment.json');
-    const htmlOutput = generateSuccessHTMLOutput(response.data);
-    res.send(htmlOutput);
-  } catch (error) {
-    console.error('Error fetching data:', error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-function generateSuccessHTMLOutput(data) {
-  var products1 = JSON.stringify(data.products);
+// function to generate received data in table format
+function generateSuccessHTMLOutput(response) {
+  var products1 = JSON.stringify(response.data.products);
   var products = JSON.parse(products1);
   var tdata = "<table><th>Title</th><th>Price</th>";
   var keys = Object.keys(products);
   var sort = [];
-
+  // converted the nested object into nested array
   for (let i = 0; i < keys.length; i++) {
     sort.push([
       products[keys[i]].title,
@@ -64,9 +30,11 @@ function generateSuccessHTMLOutput(data) {
     ]);
   }
 
+  // sorting logic for the nested array similar to java's comparable/comparator logic
   sort.sort(function(a, b) {
     var valueA, valueB;
 
+    // accessed popularity values
     valueA = a[2];
     valueB = b[2];
     if (+valueA > +valueB) {
@@ -76,19 +44,17 @@ function generateSuccessHTMLOutput(data) {
     }
     return 0;
   });
-
+  
+  // iteration to produce the display
   for (let j = 0; j < sort.length; j++) {
     tdata +=
       "<tr><td>" +
       sort[j][0] +
       "</td><td>" +
       sort[j][1] +
-      "</td></tr>";  // Remove the empty <td>
+      "</td><td>" +
+      "</tr>";
   }
   tdata += "</table>";
   return tdata;
 }
-
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});

@@ -1,28 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Product Data</title>
+  <!-- Used Google Chrome extension to bypass the CORS Error - https://chrome.google.com/webstore/detail/moesif-origin-cors-change/digfbfaphojjndkpccljibejjbppifbc -->
 </head>
 
 <body>
-    <h1>Product Data</h1>
-  <button onclick="performGetRequest()">Get</button>
-  <div id="display"></div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
-  <script>
-    async function performGetRequest() {
-      try {
-        const response = await axios.get('http://localhost:3000/performGetRequest');
-        document.getElementById('display').innerHTML = response.data;
-      } catch (error) {
-        document.getElementById('display').innerHTML = 'Error fetching data: ' + error.message;
-      }
-    }
-  </script>
+  <h1>Product Data</h1>
+  <button onclick=performGetRequest()>Get</button>
+  <div id=display></div>
+  
+  <script src="index.js"></script>
+  <script src=https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js></script>
 </body>
 
 </html>
